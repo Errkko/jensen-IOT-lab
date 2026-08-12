@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16
+    container_name: jensen-iot-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-jensen_iot}
+      POSTGRES_USER: ${POSTGRES_USER:-student}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-student}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-student} -d ${POSTGRES_DB:-jensen_iot}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: jensen-iot-redis
+
+  api:
+    build: ./api
+    container_name: jensen-iot-api
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${POSTGRES_DB:-jensen_iot}
+      DB_USER: ${POSTGRES_USER:-student}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-student}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      APP_VERSION: v1
+    ports:
+      - "${API_PORT:-5001}:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  simulator:
+    build: ./simulator
+    container_name: jensen-iot-simulator
+    environment:
+      API_URL: http://api:5000
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

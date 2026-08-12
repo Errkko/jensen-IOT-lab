@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <title>Jensen IoT Platform</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background:#f5f7fb; color:#111827; }
+    .card { background:white; padding:20px; border-radius:12px; max-width:800px; box-shadow:0 5px 20px rgba(0,0,0,.08); }
+    code { background:#eef2f7; padding:2px 5px; border-radius:5px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Jensen IoT Platform</h1>
+    <p>API:t kör.</p>
+    <p><b>Version:</b> {{ version }}</p>
+    <p><b>Container / Pod:</b> {{ pod }}</p>
+
+    <h2>Testa</h2>
+    <ul>
+      <li><code>/health</code></li>
+      <li><code>/devices</code></li>
+      <li><code>/measurements</code></li>
+      <li><code>/devices/sensor-001/latest</code></li>
+    </ul>
+
+    <p>Öppna <code>docker compose logs -f simulator</code> för att se sensorerna skicka data.</p>
+  </div>
+</body>
+</html>

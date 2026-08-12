@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Virtual environments and local configuration
+.venv/
+venv/
+.env
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+
+# Student-generated temporary files
+*.log

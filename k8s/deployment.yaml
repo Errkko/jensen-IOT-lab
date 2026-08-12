@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jensen-iot-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jensen-iot-api
+  template:
+    metadata:
+      labels:
+        app: jensen-iot-api
+    spec:
+      containers:
+        - name: api
+          image: jensen-iot-api:lab
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: APP_VERSION
+              value: "lab"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 2
+            periodSeconds: 5
