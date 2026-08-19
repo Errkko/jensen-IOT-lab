@@ -52,7 +52,7 @@ def get_measurements():
 
 
 def device_exists(device_id):
-    # TODO M1:
+    # TODO M1: CHECK
     # Kontrollera om device_id finns i tabellen devices.
     # Returnera True eller False.
     query = """
@@ -70,7 +70,7 @@ def device_exists(device_id):
 
 
 def get_latest_measurement(device_id):
-    # TODO M1:
+    # TODO M1: CHECK
     # Implementera senaste mätvärdet för en sensor.
     query = """
         SELECT id, device_id,  temperature, humidity, battery, created_at
@@ -87,7 +87,7 @@ def get_latest_measurement(device_id):
 
 
 def get_measurements_for_device(device_id):
-    # TODO M1:
+    # TODO M1:CHECK
     # Implementera historik för en sensor.
     query = """
         SELECT id, device_id,  temperature, humidity, battery, created_at
@@ -101,7 +101,7 @@ def get_measurements_for_device(device_id):
 
 
 def insert_measurement(data):
-    # TODO M1:
+    # TODO M1: CHECK
     # Spara ett validerat mätvärde i PostgreSQL.
     query = """
         INSERT INTO measurements (device_id, temperature, humidity, battery)
@@ -120,3 +120,17 @@ def insert_measurement(data):
             )
             row=cur.fetchone()
             return _json_ready(row)
+
+
+def get_statistics():
+    query = """
+        SELECT 
+            AVG(temperature),
+            COUNT(*),
+            (SELECT COUNT(*) FROM devices) AS devices
+        FROM measurements;
+    """
+    with get_connection() as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(query)
+            return dict(cur.fetchone())

@@ -9,6 +9,7 @@ from db import (
     get_latest_measurement,
     get_measurements_for_device,
     insert_measurement,
+    get_statistics,
 )
 from validation import validate_measurement
 from cache import get_latest_from_cache, set_latest_in_cache
@@ -45,7 +46,7 @@ def measurements():
 
 @app.get("/devices/<device_id>/latest")
 def latest(device_id):
-    # TODO M1:
+    # TODO M1: CHECK
     # Läs senaste mätningen från PostgreSQL med get_latest_measurement(...).
     # Returnera 404 om sensorn eller en mätning saknas.
     latest_measurement = get_latest_measurement(device_id)
@@ -69,7 +70,7 @@ def latest(device_id):
 
 @app.get("/devices/<device_id>/measurements")
 def device_history(device_id):
-    # TODO M1:
+    # TODO M1: CHECK
     # Hämta sensorhistorik från PostgreSQL.
     # Känd sensor utan mätningar: 200 och []. Okänd sensor: 404.
     if not device_exists(device_id):
@@ -86,7 +87,7 @@ def create_measurement():
         print(f"INVALID measurement from {data.get('deviceId', 'unknown')}: {errors}")
         return jsonify({"errors": errors}), 400
 
-    # TODO M1:
+    # TODO M1: CHECK
     # Kontrollera med device_exists(...) att deviceId tillhör en känd sensor.
     # Okänd sensor ska ge 400 med ett tydligt JSON-fel.
     
@@ -113,7 +114,7 @@ def create_measurement():
 def statistics():
     # ⭐ Utmaning:
     # Returnera antal devices, antal measurements, avg temp etc.
-    return jsonify({"message": "Optional challenge"}), 501
+    return jsonify(get_statistics()), 200
 
 
 if __name__ == "__main__":
