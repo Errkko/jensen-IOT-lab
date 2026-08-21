@@ -49,23 +49,24 @@ def latest(device_id):
     # TODO M1: CHECK
     # Läs senaste mätningen från PostgreSQL med get_latest_measurement(...).
     # Returnera 404 om sensorn eller en mätning saknas.
-    latest_measurement = get_latest_measurement(device_id)
 
-    if not latest_measurement:
-        return jsonify({"error": "Device or measurement not found"}), 404
+    measurement = get_latest_from_cache(device_id)
 
-    return jsonify(latest_measurement), 200
+    if not measurement:
+        measurement = get_latest_measurement(device_id)
+        if not measurement:
+            return jsonify({"error": "Device or measurement not found"}), 404
+        
+        set_latest_in_cache(device_id, measurement)
 
+    return jsonify(measurement), 200
 
     # TODO M2:
     # Utöka M1-lösningen med cache-aside:
     # 1. Försök läsa från Redis.
     # 2. Vid cache miss: läs från PostgreSQL.
     # 3. Spara databasresultatet i Redis.
-    return jsonify({
-        "message": "TODO: implementera latest measurement",
-        "deviceId": device_id
-    }), 501
+
 
 
 @app.get("/devices/<device_id>/measurements")
@@ -90,20 +91,21 @@ def create_measurement():
     # TODO M1: CHECK
     # Kontrollera med device_exists(...) att deviceId tillhör en känd sensor.
     # Okänd sensor ska ge 400 med ett tydligt JSON-fel.
-    
     if not device_exists(data.get("deviceId")):
         return jsonify({"error": "Device not found"}), 400
     
     # Spara till PostgreSQL via insert_measurement(data).
     device_id = data.get("deviceId")
     data["device_id"] = device_id
-    measurement_id = insert_measurement(data)
 
-    return jsonify(measurement_id), 201
+    measurement = insert_measurement(data)
+
 
     # TODO M2:
-    # Uppdatera latest-cache för sensorn.
-    #
+    # Uppdatera latest-cache för sensorn
+    set_latest_in_cache(device_id, measurement)
+    return jsonify(measurement), 201
+
     # Under starter-fasen returneras 202 så att simulatorn kan köras
     # även innan studenten implementerat persistensen.
     print(f"VALID measurement received: {data}")
@@ -112,7 +114,7 @@ def create_measurement():
 
 @app.get("/statistics")
 def statistics():
-    # ⭐ Utmaning:
+    # ⭐ Utmaning: CHECK
     # Returnera antal devices, antal measurements, avg temp etc.
     return jsonify(get_statistics()), 200
 
