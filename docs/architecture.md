@@ -1,6 +1,6 @@
 # Arkitekturdiagram
 
-<img width="3408" height="1768" alt="image" src="https://github.com/user-attachments/assets/3e09b626-1f79-44ac-a5c0-f57fbc6abe32" />
+<img width="3408" height="1768" alt="image" src="/docs/iot-diagram.png" />
 
 ## Beskrivning
 
