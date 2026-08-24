@@ -21,5 +21,4 @@ def get_latest_from_cache(device_id):
 def set_latest_in_cache(device_id, measurement):
     # TODO M2: 
     # Spara senaste mätvärdet i Redis.
-    key = client.get(f"latest:{device_id}")
     client.set(f"latest:{device_id}", json.dumps(measurement))

@@ -1,3 +1,22 @@
+# Jensen IOT Laboration
+Detta repository innehåller ett REST-API för IoT-sensorer som hanterar enheters status och mätdatan. Systemet tar emot simulerad data från tre sensorer som alla skickar temperatur, luftfuktighet och batterinivå. All data valideras och lagras i PostgrieSQL med Redis som agerar cache för den senast gjorda mätningen. Allt körs lokalt med hjälp av Docker Compose och kvalitetssäkras med pytest och en CI-pipeline via GitHub Actions.
+
+## Vad som behövs
+
+  - Docker Desktop
+  - Kubectl
+  - Minikube 
+
+## Hur allt körs
+
+  - Starta miljön med 'docker compose up --build -d'
+  - Verifiera att allt körs med 'docker compose ps'
+
+För tester:
+
+- 'docker compose exec api pytest'
+
+
 ## SQL Queries
 
 SELECT COUNT(*) FROM measurements;
