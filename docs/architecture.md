@@ -1,40 +1,23 @@
-# Arkitekturdiagram – obligatorisk leverabel
+# Arkitekturdiagram
 
-Skapa ett enkelt diagram över **din färdiga lösning**. Det ska visa komponenterna och hur de kommunicerar; du behöver inte använda UML eller någon annan avancerad standard.
+<img width="3408" height="1768" alt="image" src="https://github.com/user-attachments/assets/3e09b626-1f79-44ac-a5c0-f57fbc6abe32" />
 
-Diagrammet ska minst visa:
+## Beskrivning
 
-- en klient eller användare som anropar lösningen
-- de tre simulerade IoT-sensorerna
-- REST API:t
-- PostgreSQL för beständig historik
-- Redis för cache av senaste mätning
-- Docker Compose som lokal körmiljö
-- CI-pipelinen
-- Kubernetes-demon med Deployment, Pod-repliker och Service
+### Lokal Miljö
+Detta är det kompletta flödet där de tre sensorerna skickar sin simulerade mätdata samtidigt som användaren hämtar status och statistik via REST API:t. Med hjälp av caching så läses och skrivs mätvärden till Redis för en snabbare åtkomst medans resterande historik sparas i PostgreSQL.
 
-Använd namngivna pilar som visar viktiga anrop och dataflöden, exempelvis `HTTP POST /measurements`, `SQL` och `cache read/write`. Det ska gå att se vilket flöde som är skrivintensivt (**write-heavy**), vad som cacheas och vad som måste vara persistent.
+### Kubernetes Demo
+Visar skalning och tillgänglighet i Minikube. Trafik mot `/` och `health` går genom en kubernetes service som distribuerar anrop över tre pods.
 
-Ett enkelt exempel på detaljnivå:
+### CI Pipeline
+De automatiserade testerna som sker vid varje push/pull och körs av Github Actions. Här körs testerna och docker imagen byggs för att säkerställa att trasig kod flaggas.
 
-```text
-[3 sensorer] -- HTTP POST /measurements --> [REST API]
-                                              |  \
-                               SQL, historik  |   \ senaste värde
-                                              v    v
-                                        [PostgreSQL] [Redis cache]
+## Arkitekturval
 
-[GitHub push] --> [CI: tester + image build]
-[Användare] --> [Kubernetes Service] --> [Deployment: 3 Pod-repliker]
-```
+### Redis Cache
+Detta avlastar databasen vid anrop på senaste mätvärden, medan PostgreSQL fortfarande kan agera som databas och backup ifall Redis kraschar.
 
-Exemplet är vägledning, inte en mall som måste kopieras. Du kan göra ett sammanhängande diagram eller två tydligt märkta vyer (lokal Docker Compose-miljö och Kubernetes-demo). Gör inte diagrammet mer detaljerat än vad som behövs för att förklara lösningen.
+### Kubernetes Self-Healing
+Om en pod slutar fungerar tar self-healing över och startar en ny pod utan att systemets funktion påverkas, då det fördelar lasten automatiskt mellan de pods som är aktiva och fungerar.
 
-## Så lämnas det i repositoryt
-
-1. Skapa diagrammet i valfritt verktyg, exempelvis diagrams.net, Excalidraw, Visio, PowerPoint eller Figma.
-2. Exportera det som PNG eller PDF till `docs/`.
-3. Länka eller bädda in filen här.
-4. Ersätt denna instruktion med en kort beskrivning av diagrammet och dina viktigaste arkitekturval.
-
-Kontrollera före inlämning att text och pilar går att läsa direkt från GitHub och att diagrammet stämmer med den kod du faktiskt lämnar in.
