@@ -9,19 +9,19 @@ Detta repository innehåller ett REST-API för IoT-sensorer som hanterar enheter
 
 ## Hur allt körs
 
-  - Starta miljön med 'docker compose up --build -d'
-  - Verifiera att allt körs med 'docker compose ps'
+  - Starta miljön med `docker compose up --build -d`
+  - Verifiera att allt körs med `docker compose ps`
 
 För tester:
 
-- 'docker compose exec api pytest'
+- `docker compose exec api pytest`
 
 
 ## SQL Queries
 
 SELECT COUNT(*) FROM measurements;
 
-- Räknar (COUNT(*)) alla resultat från (FROM) tabellen (measurements) och ger antalet
+- Räknar (`COUNT(*)`) alla resultat från (`FROM`) tabellen (`/measurements`) och ger antalet
 
 
 SELECT AVG(temperature) FROM measurements:
@@ -31,4 +31,4 @@ SELECT AVG(temperature) FROM measurements:
 
 SELECT * FROM measurements WHERE created_at >= NOW() - INTERVAL '24 hours';
 
-- visar allt från measurements som skapats mellan nu och angivna intervallet 
+- Visar allt från measurements som skapats mellan nu och angivna intervallet 
