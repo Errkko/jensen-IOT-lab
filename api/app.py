@@ -68,7 +68,6 @@ def latest(device_id):
     # 3. Spara databasresultatet i Redis.
 
 
-
 @app.get("/devices/<device_id>/measurements")
 def device_history(device_id):
     # TODO M1: CHECK
@@ -100,16 +99,10 @@ def create_measurement():
         
     measurement = insert_measurement(data)
 
+    # TODO M2:CHECK        
+    # Uppdatera latest-cache för sensorn
     set_latest_in_cache(device_id, measurement)
     return jsonify(measurement), 201
-
-    # TODO M2:
-    # Uppdatera latest-cache för sensorn
-
-    # Under starter-fasen returneras 202 så att simulatorn kan köras
-    # även innan studenten implementerat persistensen.
-    print(f"VALID measurement received: {data}")
-    return jsonify({"status": "accepted", "measurement": data}), 202
 
 
 @app.get("/statistics")
