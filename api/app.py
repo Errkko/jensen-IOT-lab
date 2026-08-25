@@ -91,20 +91,20 @@ def create_measurement():
     # TODO M1: CHECK
     # Kontrollera med device_exists(...) att deviceId tillhör en känd sensor.
     # Okänd sensor ska ge 400 med ett tydligt JSON-fel.
-    if not device_exists(data.get("deviceId")):
-        return jsonify({"error": "Device not found"}), 400
-    
     # Spara till PostgreSQL via insert_measurement(data).
     device_id = data.get("deviceId")
     data["device_id"] = device_id
 
+    if not device_exists(data.get("deviceId")):
+        return jsonify({"error": "Device not found"}), 400
+        
     measurement = insert_measurement(data)
 
+    set_latest_in_cache(device_id, measurement)
+    return jsonify(measurement), 201
 
     # TODO M2:
     # Uppdatera latest-cache för sensorn
-    set_latest_in_cache(device_id, measurement)
-    return jsonify(measurement), 201
 
     # Under starter-fasen returneras 202 så att simulatorn kan köras
     # även innan studenten implementerat persistensen.
